@@ -9,7 +9,7 @@ try {
 
     if ($method == 'GET') {
         // ดึงข้อมูลลูกค้าทั้งหมด
-        $stmt = $conn->prepare("SELECT * FROM Customers");
+        $stmt = $conn->prepare("SELECT * FROM customers");
         $stmt->execute();
         $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
         echo json_encode(["success" => true, "data" => $data]);

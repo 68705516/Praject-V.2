@@ -1,9 +1,13 @@
 <template>
   <div class="customers-container">
     <!-- หัวข้อหน้า -->
-    <h2 class="mb-3">รายชื่อลูกค้า</h2>
+    <div class="page-header">
+      <h2 class="mb-3">รายชื่อลูกค้า</h2>
+      <router-link class="add-button btn btn-primary" to="/Add_Customers">Add Customer</router-link>
+    </div>
     
     <!-- ตารางแสดงข้อมูลลูกค้า -->
+
     <table class="table table-bordered table-striped">
       <thead class="table-dark">
         <tr>
@@ -15,7 +19,7 @@
           <th>ชื่อผู้ใช้</th>      <!-- username -->
         </tr>
       </thead>
-
+  
       <tbody>
         <!-- วนลูปข้อมูล customers -->
         <tr v-for="(item,index) in customers" :key="item.customer_id">
@@ -62,7 +66,7 @@ export default {
     const fetchdata = async () => {
       try {
         // เรียก API (PHP)
-        const response = await fetch("http://localhost/my-vue-app/php_api/show_customers.php");
+        const response = await fetch("http://localhost/Praject-V.2/php_api/show_customers.php");
 
         // ตรวจสอบว่าการเรียกสำเร็จหรือไม่
         if (!response.ok) {
@@ -112,6 +116,21 @@ export default {
   width: min(900px, calc(100% - 32px));
   margin: 40px auto;
   text-align: center;
+}
+
+.page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.add-button {
+  padding: 9px 14px;
+  border-radius: 4px;
+  background: #198754;
+  color: #fff;
+  text-decoration: none;
 }
 
 table {

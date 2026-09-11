@@ -24,6 +24,18 @@ const routes = [
     name: 'employees',
     // route level code-splitting
     component: () => import(/* webpackChunkName: "about" */ '../views/employees.vue')
+  },
+   {
+    path: '/Add_Customers',
+    name: 'Add_Customers',
+    // route level code-splitting
+    component: () => import(/* webpackChunkName: "about" */ '../views/Add_Customers.vue')
+  },
+  {
+    path: '/Add_Employees',
+    name: 'Add_Employees',
+    // route level code-splitting
+    component: () => import(/* webpackChunkName: "about" */ '../views/Add_Employees.vue')
   }
 ]
 

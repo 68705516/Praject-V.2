@@ -1,7 +1,23 @@
 <template>
   <div class="employees-container">
     <!-- หัวข้อหน้า -->
-    <h2 class="mb-3">รายชื่อพนักงาน</h2>
+    <div class="page-header">
+      <h2 class="mb-3">รายชื่อพนักงาน</h2>
+      <button class="add-button" type="button" @click="addEmployee">
+        Add Employee
+      </button>
+    </div>
+    <form v-if="showForm" class="employee-form" @submit.prevent="saveEmployee">
+      <input v-model.trim="form.firstName" placeholder="First name" required />
+      <input v-model.trim="form.lastName" placeholder="Last name" required />
+      <input v-model.trim="form.phone" placeholder="Phone" required />
+      <input v-model.trim="form.username" placeholder="Username" required />
+      <input v-model="form.password" type="password" placeholder="Password" required />
+      <button class="save-button" type="submit" :disabled="saving">
+        {{ saving ? "Adding..." : "Save Employee" }}
+      </button>
+    </form>
+    <p v-if="message" class="message">{{ message }}</p>
     
     <!-- ตารางแสดงข้อมูลพนักงาน -->
     <table class="table table-bordered table-striped">
@@ -43,7 +59,7 @@
 
 <script>
 // import ฟังก์ชันจาก Vue (Composition API)
-import { ref, onMounted } from "vue";
+import { reactive, ref, onMounted } from "vue";
 
 export default {
   name: "employeesList", // ชื่อ component
@@ -55,6 +71,44 @@ export default {
     const employees = ref([]); // เก็บข้อมูลพนักงาน (array)
     const loading = ref(true); // สถานะโหลดข้อมูล
     const error = ref(null);   // เก็บ error
+    const message = ref("");
+    const showForm = ref(false);
+    const saving = ref(false);
+    const form = reactive({ firstName: "", lastName: "", phone: "", username: "", password: "" });
+
+    const addEmployee = () => {
+      showForm.value = true;
+      message.value = "";
+      error.value = null;
+    };
+
+    const saveEmployee = async () => {
+      saving.value = true;
+      message.value = "";
+      error.value = null;
+
+      try {
+        const response = await fetch("http://localhost/Praject-V.2/php_api/add_employees.php", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(form)
+        });
+        const result = await response.json();
+
+        if (!response.ok || !result.success) {
+          throw new Error(result.message || "เพิ่มพนักงานไม่สำเร็จ");
+        }
+
+        message.value = "เพิ่มพนักงานแล้ว";
+        showForm.value = false;
+        Object.keys(form).forEach((key) => { form[key] = ""; });
+        await fetchdata();
+      } catch (err) {
+        error.value = err.message;
+      } finally {
+        saving.value = false;
+      }
+    };
 
     // -----------------------------
     // ฟังก์ชันดึงข้อมูลจาก API
@@ -62,7 +116,7 @@ export default {
     const fetchdata = async () => {
       try {
         // เรียก API (PHP)
-        const response = await fetch("http://localhost/my-vue-app/php_api/show_employees.php");
+        const response = await fetch("http://localhost/Praject-V.2/php_api/show_employees.php");
 
         // ตรวจสอบว่าการเรียกสำเร็จหรือไม่
         if (!response.ok) {
@@ -72,12 +126,11 @@ export default {
         // แปลง response เป็น JSON
         const result = await response.json();
 
-        // API พนักงานส่งข้อมูลกลับมาเป็น array โดยตรง
-        if (!Array.isArray(result)) {
-          throw new Error(result.error || "รูปแบบข้อมูลพนักงานไม่ถูกต้อง");
+        if (!result.success || !Array.isArray(result.data)) {
+          throw new Error(result.message || "รูปแบบข้อมูลพนักงานไม่ถูกต้อง");
         }
 
-        employees.value = result;
+        employees.value = result.data;
 
       } catch (err) {
         // ถ้า error ให้เก็บข้อความไว้แสดง
@@ -102,7 +155,13 @@ export default {
     return {
       employees,
       loading,
-      error
+      error,
+      message,
+      addEmployee,
+      showForm,
+      saving,
+      form,
+      saveEmployee
     };
   }
 };
@@ -113,6 +172,53 @@ export default {
   width: min(900px, calc(100% - 32px));
   margin: 40px auto;
   text-align: center;
+}
+
+.page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.add-button {
+  padding: 9px 14px;
+  border: 0;
+  border-radius: 4px;
+  background: #198754;
+  color: #fff;
+  cursor: pointer;
+}
+
+.message {
+  color: #198754;
+}
+
+.employee-form {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr) auto;
+  gap: 8px;
+  margin: 16px 0;
+}
+
+.employee-form input,
+.save-button {
+  min-width: 0;
+  padding: 9px;
+}
+
+.save-button {
+  border: 0;
+  border-radius: 4px;
+  background: #0d6efd;
+  color: #fff;
+  cursor: pointer;
+}
+
+@media (max-width: 700px) {
+  .employee-form {
+    grid-template-columns: 1fr;
+  }
 }
 
 table {
