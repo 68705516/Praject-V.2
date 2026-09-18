@@ -2,7 +2,7 @@
   <nav class="navbar">
     <div class="container-fluid">
       <router-link class="navbar-brand" to="/" @click="closeMenu">
-        Romes House
+        Nigga House
       </router-link>
 
       <button
@@ -41,6 +41,14 @@
             <li class="nav-item">
               <router-link class="nav-link" to="/employees" @click="closeMenu">Employees</router-link>
             </li>
+            <li class="nav-item">
+              <router-link class="nav-link" to="/contract" @click="closeMenu">Contract</router-link>
+            </li>
+           <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              Dropdown
+            </a>
+           </li>
             <li class="nav-item">
               <router-link class="nav-link" to="/about" @click="closeMenu">About</router-link>
             </li>
