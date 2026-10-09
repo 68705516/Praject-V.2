@@ -17,6 +17,7 @@
           <th>นามสกุล</th>        <!-- lastName -->
           <th>เบอร์โทร</th>       <!-- phone -->
           <th>ชื่อผู้ใช้</th>      <!-- username -->
+          <th>ลบ</th>
         </tr>
       </thead>
   
@@ -29,6 +30,9 @@
           <td>{{ item.lastName }}</td>    <!-- นามสกุล -->
           <td>{{ item.phone }}</td>       <!-- เบอร์โทร -->
           <td>{{ item.username }}</td>    <!-- ชื่อผู้ใช้ -->
+          <td>
+            <button class="delete-button btn-sm" @click="deleteCustomer(item.customer_id)">ลบ</button>
+          </td>
         </tr>
       </tbody>
     </table>
@@ -91,7 +95,6 @@ export default {
         loading.value = false;
       }
     };
-
     // -----------------------------
     // lifecycle: ทำงานเมื่อ component โหลดเสร็จ
     // -----------------------------
@@ -99,13 +102,40 @@ export default {
       fetchdata(); // เรียก API ทันที
     });
 
+    const deleteCustomer = async (id) => {
+      if (!confirm("คุณต้องการลบข้อมูลนี้ใช่หรือไม่?")) return;
+
+      try {
+        const response = await fetch("http://localhost/Praject-V.2/php_api/show_customers.php", {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({ customer_id: id })
+        });
+        const result = await response.json();
+
+        if (!response.ok || !result.success) {
+          throw new Error(result.message || "ไม่สามารถลบข้อมูลลูกค้าได้");
+        }
+
+        customers.value = customers.value.filter(
+          customer => Number(customer.customer_id) !== Number(id)
+        );
+        alert(result.message);
+      } catch (err) {
+        alert("เกิดข้อผิดพลาด: " + err.message);
+      }
+    };
+
     // -----------------------------
     // return ค่าไปใช้ใน template
     // -----------------------------
     return {
       customers,
       loading,
-      error
+      error,
+      deleteCustomer
     };
   }
 };
@@ -131,6 +161,15 @@ export default {
   background: #198754;
   color: #fff;
   text-decoration: none;
+}
+
+.delete-button {
+  padding: 6px 10px;
+  border: 1px solid #dc3545;
+  border-radius: 4px;
+  background: #dc3545;
+  color: #fff;
+  cursor: pointer;
 }
 
 table {

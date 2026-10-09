@@ -29,6 +29,7 @@
           <th>นามสกุล</th>        <!-- lastName -->
           <th>เบอร์โทร</th>       <!-- phone -->
           <th>ชื่อผู้ใช้</th>      <!-- username -->
+          <th>ลบ</th>
         </tr>
       </thead>
 
@@ -41,6 +42,9 @@
           <td>{{ item.lastName }}</td>    <!-- นามสกุล -->
           <td>{{ item.phone }}</td>       <!-- เบอร์โทร -->
           <td>{{ item.username }}</td>    <!-- ชื่อผู้ใช้ -->
+          <td>
+            <button class="delete-button" type="button" @click="deleteEmployee(item.emp_id)">ลบ</button>
+          </td>
         </tr>
       </tbody>
     </table>
@@ -142,6 +146,30 @@ export default {
       }
     };
 
+    const deleteEmployee = async (id) => {
+      if (!confirm("คุณต้องการลบข้อมูลพนักงานนี้ใช่หรือไม่?")) return;
+
+      try {
+        const response = await fetch("http://localhost/Praject-V.2/php_api/show_employees.php", {
+          method: "DELETE",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ emp_id: id })
+        });
+        const result = await response.json();
+
+        if (!response.ok || !result.success) {
+          throw new Error(result.message || "ไม่สามารถลบข้อมูลพนักงานได้");
+        }
+
+        employees.value = employees.value.filter(
+          employee => Number(employee.emp_id) !== Number(id)
+        );
+        alert(result.message);
+      } catch (err) {
+        alert("เกิดข้อผิดพลาด: " + err.message);
+      }
+    };
+
     // -----------------------------
     // lifecycle: ทำงานเมื่อ component โหลดเสร็จ
     // -----------------------------
@@ -161,7 +189,8 @@ export default {
       showForm,
       saving,
       form,
-      saveEmployee
+      saveEmployee,
+      deleteEmployee
     };
   }
 };
@@ -211,6 +240,15 @@ export default {
   border: 0;
   border-radius: 4px;
   background: #0d6efd;
+  color: #fff;
+  cursor: pointer;
+}
+
+.delete-button {
+  padding: 6px 10px;
+  border: 1px solid #dc3545;
+  border-radius: 4px;
+  background: #dc3545;
   color: #fff;
   cursor: pointer;
 }

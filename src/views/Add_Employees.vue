@@ -8,7 +8,7 @@
 			<input v-model.trim="form.username" placeholder="Username" required />
 			<input v-model="form.password" type="password" placeholder="Password" required />
 			<button type="submit" :disabled="loading">
-				{{ loading ? "Adding..." : "Add Employee" }}
+			{{ loading ? "Adding..." : "Add Employee" }}
 			</button>
 		</form>
 		<p v-if="message" class="message">{{ message }}</p>

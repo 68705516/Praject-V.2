@@ -90,6 +90,14 @@ button:disabled {
 	cursor: wait;
 }
 
+ .delete-button {
+  padding: 9px 14px;
+  border-radius: 4px;
+  background: #e90a20;
+  color: #f50707;
+  text-decoration: none;
+}
+
 .message { color: #198754; }
 .error { color: #dc3545; }
 </style>
