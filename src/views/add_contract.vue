@@ -1,16 +1,29 @@
 <template>
 	<main class="add-contract">
-		<h2>Add Contract</h2>
+		<h2>เพิ่มข้อมูล Contract</h2>
 		<form @submit.prevent="addContract">
-			<input v-model.trim="form.studentId" placeholder="Student ID" required />
-			<input v-model.trim="form.studentName" placeholder="Student Name" required />
-			<input v-model.trim="form.contractType" placeholder="Contract Type" required />
-			<input v-model.trim="form.startDate" type="date" placeholder="Start Date" required />
-
-			<input v-model.trim="form.phone" placeholder="Phone" required />
-			<input v-model="form.email" type="email" placeholder="Email" required />
+			<label>
+				ชื่อ
+				<input v-model.trim="form.name" type="text" required />
+			</label>
+			<label>
+				ประเภทผู้ใช้
+				<input v-model.trim="form.contractType" type="text" required />
+			</label>
+			<label>
+				เบอร์โทร
+				<input v-model.trim="form.phone" type="tel" required />
+			</label>
+			<label>
+				อีเมล
+				<input v-model.trim="form.email" type="email" required />
+			</label>
+			<label>
+				ข้อเสนอที่จะเสนอ
+				<textarea v-model.trim="form.proposal" rows="4" required></textarea>
+			</label>
 			<button type="submit" :disabled="loading">
-				{{ loading ? "Adding..." : "Add Contract" }}
+				{{ loading ? "กำลังบันทึก..." : "บันทึกข้อมูล" }}
 			</button>
 		</form>
 		<p v-if="message" class="message">{{ message }}</p>
@@ -30,11 +43,11 @@ export default {
 		const message = ref("");
 		const error = ref("");
 		const form = reactive({
-			studentId: "",
+			name: "",
 			contractType: "",
-			startDate: "",
 			phone: "",
-			email: ""
+			email: "",
+			proposal: ""
 		});
 
 		const addContract = async () => {
@@ -80,9 +93,17 @@ form {
 }
 
 input,
+textarea,
 button {
+	width: 100%;
 	padding: 10px;
 	font: inherit;
+}
+
+label {
+	display: grid;
+	gap: 6px;
+	text-align: left;
 }
 
 button {

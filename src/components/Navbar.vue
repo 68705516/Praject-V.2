@@ -16,21 +16,21 @@
         <span class="navbar-toggler-icon"></span>
       </button>
 
-      <div v-if="menuOpen" class="offcanvas-backdrop" @click="closeMenu"></div>
+      <div v-if="menuOpen" class="menu-backdrop" @click="closeMenu"></div>
       <aside
         id="offcanvasDarkNavbar"
-        class="offcanvas"
-        :class="{ 'offcanvas-open': menuOpen }"
+        class="menu-panel"
+        :class="{ 'menu-panel-open': menuOpen }"
         aria-labelledby="offcanvasDarkNavbarLabel"
       >
-        <div class="offcanvas-header">
-          <h5 id="offcanvasDarkNavbarLabel" class="offcanvas-title">เมนูหลัก</h5>
+        <div class="menu-panel-header">
+          <h5 id="offcanvasDarkNavbarLabel" class="menu-panel-title">เมนูหลัก</h5>
           <button class="btn-close" type="button" aria-label="ปิดเมนู" @click="closeMenu">
             &times;
           </button>
         </div>
 
-        <div class="offcanvas-body">
+        <div class="menu-panel-body">
           <ul class="navbar-nav">
             <li class="nav-item">
               <router-link class="nav-link" to="/" @click="closeMenu">Home</router-link>
@@ -39,16 +39,31 @@
               <router-link class="nav-link" to="/customers" @click="closeMenu">Customers</router-link>
             </li>
             <li class="nav-item">
+              <router-link class="nav-link" to="/customer_crud" @click="closeMenu">Customers_CRUD</router-link>
+            </li>
+             <li class="nav-item">
+              <router-link class="nav-link" to="/employee_crud" @click="closeMenu">Employees_CRUD</router-link>
+            </li>
+            <li class="nav-item">
               <router-link class="nav-link" to="/employees" @click="closeMenu">Employees</router-link>
             </li>
             <li class="nav-item">
               <router-link class="nav-link" to="/contract" @click="closeMenu">Contract</router-link>
             </li>
-           <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-              Dropdown
-            </a>
-           </li>
+            <li class="nav-item Register">
+              <button
+                class="nav-link dropdown-toggle"
+                type="button"
+                :aria-expanded="dropdownOpen"
+                @click="dropdownOpen = !dropdownOpen"
+              >
+                Login / Logout
+              </button>
+              <div v-if="dropdownOpen" class="register-menu">
+                <router-link class="dropdown-item" to="/login" @click="closeMenu">Login</router-link>
+                <router-link class="dropdown-item" to="/logout" @click="closeMenu">Logout</router-link>
+              </div>
+            </li>
             <li class="nav-item">
               <router-link class="nav-link" to="/about" @click="closeMenu">About</router-link>
             </li>
@@ -71,12 +86,14 @@ export default {
   name: "Navbar",
   setup() {
     const menuOpen = ref(false);
+    const dropdownOpen = ref(false);
 
     const closeMenu = () => {
       menuOpen.value = false;
+      dropdownOpen.value = false;
     };
 
-    return { menuOpen, closeMenu };
+    return { menuOpen, dropdownOpen, closeMenu };
   }
 };
 </script>
@@ -139,14 +156,14 @@ export default {
   transform: translateY(5px);
 }
 
-.offcanvas-backdrop {
+.menu-backdrop {
   position: fixed;
   inset: 0;
   z-index: 1001;
   background: rgba(0, 0, 0, 0.5);
 }
 
-.offcanvas {
+.menu-panel {
   position: fixed;
   top: 0;
   right: 0;
@@ -159,17 +176,17 @@ export default {
   transition: transform 0.2s ease;
 }
 
-.offcanvas-open {
+.menu-panel-open {
   transform: translateX(0);
 }
 
-.offcanvas-header {
+.menu-panel-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
 }
 
-.offcanvas-title {
+.menu-panel-title {
   margin: 0;
 }
 
@@ -182,7 +199,7 @@ export default {
   cursor: pointer;
 }
 
-.offcanvas-body {
+.menu-panel-body {
   padding-top: 28px;
 }
 
@@ -198,6 +215,32 @@ export default {
 .nav-link {
   display: block;
   padding: 10px 0;
+}
+
+.dropdown-toggle {
+  width: 100%;
+  border: 0;
+  background: transparent;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.register-menu {
+  display: grid;
+  gap: 4px;
+  padding: 4px 0 4px 12px;
+}
+
+.dropdown-item {
+  display: block;
+  padding: 8px 0;
+  color: #fff;
+  text-decoration: none;
+}
+
+.dropdown-item:hover {
+  color: #42b983;
 }
 
 .nav-link:hover,
