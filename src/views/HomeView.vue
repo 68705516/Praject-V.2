@@ -3,7 +3,7 @@
     <h1 class="visually-hidden">Heroes examples</h1>
 
     <section id="top" class="hero centered-hero">
-      <div class="brand-mark" aria-hidden="true">B</div>
+      <img class="brand-mark" :src="logo" alt="Logo" />
       <p class="eyebrow">Bootstrap-inspired layouts</p>
       <h2>Centered hero</h2>
       <p class="hero-copy">
@@ -106,10 +106,12 @@
 </template>
 
 <script>
+import logo from '@/assets/image/images.jpg';
+
 export default {
   name: 'HomeView',
   data() {
-    return { email: '', password: '', remember: false, submitted: false };
+    return { logo, email: '', password: '', remember: false, submitted: false };
   },
   methods: {
     submitForm() {
@@ -125,7 +127,7 @@ export default {
 .visually-hidden { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
 .hero, .split-section, .signup-section, .border-hero { max-width: 1120px; margin: 0 auto; padding: 88px 32px; }
 .centered-hero { text-align: center; padding-top: 110px; }
-.brand-mark { display: grid; place-items: center; width: 72px; height: 72px; margin: 0 auto 24px; border-radius: 18px; background: #f0b429; color: #17212b; font-size: 42px; font-weight: 900; transform: rotate(-5deg); box-shadow: 8px 8px 0 #17212b; }
+.brand-mark { display: block; width: 72px; height: 72px; margin: 0 auto 24px; border-radius: 12px; object-fit: cover; transform: rotate(-5deg); box-shadow: 8px 8px 0 #17212b; }
 .eyebrow { margin: 0 0 14px; color: #b45309; font-size: .76rem; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; }
 h2 { margin: 0 0 18px; font-size: clamp(2.25rem, 5vw, 4.6rem); line-height: 1.02; letter-spacing: -.04em; }
 .hero-copy { max-width: 650px; margin: 0 auto 28px; color: var(--muted); font-size: 1.14rem; line-height: 1.7; }

@@ -2,7 +2,8 @@
   <nav class="navbar">
     <div class="container-fluid">
       <router-link class="navbar-brand" to="/" @click="closeMenu">
-        Nigga House
+        <img class="navbar-logo" :src="logo" alt="" />
+        <span>My House</span>
       </router-link>
 
       <button
@@ -50,6 +51,15 @@
             <li class="nav-item">
               <router-link class="nav-link" to="/contract" @click="closeMenu">Contract</router-link>
             </li>
+            <li class="nav-item">
+              <router-link class="nav-link" to="/show_product" @click="closeMenu">Show Products</router-link>
+            </li>
+             <li class="nav-item">
+              <router-link class="nav-link" to="/product" @click="closeMenu">Product</router-link>
+            </li>
+            <li class="nav-item">
+              <router-link class="nav-link" to="/assets" @click="closeMenu">Assets</router-link>
+            </li>
             <li class="nav-item Register">
               <button
                 class="nav-link dropdown-toggle"
@@ -81,6 +91,7 @@
 
 <script>
 import { ref } from "vue";
+import logo from "@/assets/image/images.jpg";
 
 export default {
   name: "Navbar",
@@ -93,7 +104,7 @@ export default {
       dropdownOpen.value = false;
     };
 
-    return { menuOpen, dropdownOpen, closeMenu };
+    return { menuOpen, dropdownOpen, closeMenu, logo };
   }
 };
 </script>
@@ -124,8 +135,18 @@ export default {
 }
 
 .navbar-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
   font-size: 1.15rem;
   font-weight: 700;
+}
+
+.navbar-logo {
+  width: 70px;
+  height: 70px;
+  border-radius: 6px;
+  object-fit: cover;
 }
 
 .navbar-toggler {
