@@ -1,11 +1,10 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import HomeView from '../views/HomeView.vue'
 
 const routes = [
   {
     path: '/',
     name: 'home',
-    component: HomeView
+    redirect: '/show_product'
   },
   {
     path: '/about',
@@ -51,17 +50,20 @@ const routes = [
   {
     path: '/customer_crud',
     name: 'customer_crud',
-    component: () => import(/* webpackChunkName: "customer_crud" */ '../views/customer_crud.vue')
+    component: () => import(/* webpackChunkName: "customer_crud" */ '../views/customer_crud.vue'),
+     meta: { requiresAuth: true }
   },
   {
     path: '/employee_crud',
     name: 'employee_crud',
-    component: () => import(/* webpackChunkName: "employee_crud" */ '../views/employee_crud.vue')
+    component: () => import(/* webpackChunkName: "employee_crud" */ '../views/employee_crud.vue'),
+     meta: { requiresAuth: true }
   },
    {
     path: '/product',
     name: 'product',
-    component: () => import(/* webpackChunkName: "product" */ '../views/product.vue')
+    component: () => import(/* webpackChunkName: "product" */ '../views/product.vue'),
+     meta: { requiresAuth: true }
   },
    {
     path: '/show_product',
@@ -71,13 +73,46 @@ const routes = [
   {
     path: '/assets',
     name: 'assets',
-    component: () => import(/* webpackChunkName: "assets" */ '../views/assets.vue')
+    component: () => import(/* webpackChunkName: "assets" */ '../views/assets.vue'),
+    meta: { requiresAuth: true }
+  },
+    {
+    path: '/login',
+    name: 'login',
+    component: () => import(/* webpackChunkName: "assets" */ '../views/login.vue')
+  },
+    {
+    path: '/register',
+    name: 'register',
+    component: () => import(/* webpackChunkName: "assets" */ '../views/Add_Employees.vue')
   }
 ]
 
 const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
   routes
+})
+
+// ตรวจสอบสิทธิ์ก่อนเปลี่ยนหน้า
+router.beforeEach((to, from, next) => {
+
+  // ตรวจสอบสถานะ Login จาก localStorage
+  const isLoggedIn = localStorage.getItem('adminLogin') === 'true'
+
+  // ถ้าหน้านั้นต้อง Login แต่ยังไม่ได้ Login
+  if (to.meta.requiresAuth && !isLoggedIn) {
+    next('/login')
+  }
+
+  // ถ้า Login แล้ว ไม่ต้องกลับไปหน้า Login
+  else if (to.path === '/login' && isLoggedIn) {
+    next('/show_product')
+  }
+
+  // กรณีอื่น ๆ อนุญาตให้เข้าหน้าได้
+  else {
+    next()
+  }
 })
 
 export default router

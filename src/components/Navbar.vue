@@ -54,25 +54,34 @@
             <li class="nav-item">
               <router-link class="nav-link" to="/show_product" @click="closeMenu">Show Products</router-link>
             </li>
-             <li class="nav-item">
-              <router-link class="nav-link" to="/product" @click="closeMenu">Product</router-link>
+             <li v-if="isLoggedIn" class="nav-item">
+              <router-link class="nav-link" to="/product" @click="closeMenu ">Product</router-link>
             </li>
             <li class="nav-item">
               <router-link class="nav-link" to="/assets" @click="closeMenu">Assets</router-link>
             </li>
-            <li class="nav-item Register">
+            <li v-if="!isLoggedIn" class="nav-item Register">
               <button
                 class="nav-link dropdown-toggle"
                 type="button"
                 :aria-expanded="dropdownOpen"
                 @click="dropdownOpen = !dropdownOpen"
               >
-                Login / Logout
+                Register / Login
               </button>
               <div v-if="dropdownOpen" class="register-menu">
+                <router-link class="dropdown-item" to="/register" @click="closeMenu">Register</router-link>
                 <router-link class="dropdown-item" to="/login" @click="closeMenu">Login</router-link>
-                <router-link class="dropdown-item" to="/logout" @click="closeMenu">Logout</router-link>
               </div>
+            </li>
+            <li v-else class="nav-item user-menu">
+              <span class="user-name">
+                <i class="bi bi-person-circle"></i>
+                {{ userName }}
+              </span>
+              <button class="nav-link logout-button" type="button" @click="logout">
+                Logout
+              </button>
             </li>
             <li class="nav-item">
               <router-link class="nav-link" to="/about" @click="closeMenu">About</router-link>
@@ -90,7 +99,8 @@
 </template>
 
 <script>
-import { ref } from "vue";
+import { ref, watch } from "vue";
+import { useRoute, useRouter } from "vue-router";
 import logo from "@/assets/image/images.jpg";
 
 export default {
@@ -98,13 +108,47 @@ export default {
   setup() {
     const menuOpen = ref(false);
     const dropdownOpen = ref(false);
+    const isLoggedIn = ref(false);
+    const userName = ref("");
+    const route = useRoute();
+    const router = useRouter();
+
+    const syncAuthState = () => {
+      isLoggedIn.value = localStorage.getItem("adminLogin") === "true";
+      try {
+        const user = JSON.parse(localStorage.getItem("user") || "null");
+        userName.value = user?.name || user?.username || "";
+      } catch {
+        userName.value = "";
+      }
+    };
+
+    syncAuthState();
+    watch(() => route.fullPath, syncAuthState);
 
     const closeMenu = () => {
       menuOpen.value = false;
       dropdownOpen.value = false;
     };
 
-    return { menuOpen, dropdownOpen, closeMenu, logo };
+    const logout = () => {
+      localStorage.removeItem("adminLogin");
+      localStorage.removeItem("user");
+      isLoggedIn.value = false;
+      userName.value = "";
+      closeMenu();
+      router.push("/");
+    };
+
+    return {
+      menuOpen,
+      dropdownOpen,
+      isLoggedIn,
+      userName,
+      closeMenu,
+      logout,
+      logo
+    };
   }
 };
 </script>
@@ -115,14 +159,14 @@ export default {
   top: 0;
   right: 0;
   left: 0;
-  z-index: 1000;
+  z-index: 900;
   background: #212529;
   color: #fff;
 }
 
 .container-fluid {
-  min-height: 64px;
-  padding: 0 24px;
+  min-height: 50px;
+  padding: 0 20px;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -139,7 +183,7 @@ export default {
   align-items: center;
   gap: 10px;
   font-size: 1.15rem;
-  font-weight: 700;
+  font-weight: 600;
 }
 
 .navbar-logo {
@@ -262,6 +306,24 @@ export default {
 
 .dropdown-item:hover {
   color: #42b983;
+}
+
+.user-menu {
+  display: grid;
+  gap: 8px;
+}
+
+.user-name {
+  padding: 10px 0;
+  color: #fff;
+}
+
+.logout-button {
+  border: 0;
+  background: transparent;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
 }
 
 .nav-link:hover,
